@@ -57,7 +57,7 @@ deps_optional = {
                                          '0f747aaa0c16f750bdfa2ba37ec25d6c8e1bc117',
                                          'rp2040'],
     'hw/mcu/renesas/fsp': ['https://github.com/renesas/fsp.git',
-                           'd52e5a6a59b7c638da860c2bb309b6e78e752ff8',
+                           'ba7104eb99475f0217595123d4972852c22b89bc',
                            'ra'],
     'hw/mcu/renesas/rx': ['https://github.com/kkitayam/rx_device.git',
                           '706b4e0cf485605c32351e2f90f5698267996023',

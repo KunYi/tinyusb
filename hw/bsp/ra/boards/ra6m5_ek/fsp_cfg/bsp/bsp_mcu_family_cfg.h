@@ -377,6 +377,10 @@ extern "C" {
 #ifndef BSP_CFG_ROM_REG_BPS_SEL3
 #define BSP_CFG_ROM_REG_BPS_SEL3 (BSP_CFG_ROM_REG_BPS3 & BSP_CFG_ROM_REG_PBPS3)
 #endif
+/* Security Attribution for Bank Select Register */
+#ifndef BSP_CFG_ROM_REG_BANKSEL_SEL
+#define BSP_CFG_ROM_REG_BANKSEL_SEL (0xFFFFFFFFU)
+#endif
 #ifndef BSP_CLOCK_CFG_MAIN_OSC_WAIT
 #define BSP_CLOCK_CFG_MAIN_OSC_WAIT (9)
 #endif
