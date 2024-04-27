@@ -174,7 +174,7 @@ deps_optional = {
                             '77c4095087e5ed2c548ec9058e655d0b8757663b',
                             'ch32f20x'],
     'lib/CMSIS_5': ['https://github.com/ARM-software/CMSIS_5.git',
-                    '20285262657d1b482d132d20d755c8c330d55c1f',
+                    '2b7495b8535bdcb306dac29b9ded4cfb679d7e5c',
                     'imxrt kinetis_k32l2 kinetis_kl lpc51 lpc54 lpc55 mcx mm32 msp432e4 nrf ra saml2x'
                     'lpc11 lpc13 lpc15 lpc17 lpc18 lpc40 lpc43'
                     'stm32f0 stm32f1 stm32f2 stm32f3 stm32f4 stm32f7 stm32g0 stm32g4 stm32h5'
