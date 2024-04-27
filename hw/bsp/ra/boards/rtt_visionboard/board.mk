@@ -1,10 +1,14 @@
 CPU_CORE = cortex-m85
 MCU_VARIANT = ra8d1
 
-# For flash-jlink target
-JLINK_DEVICE = R7FA8D1BH
+# For flash-pyocd target
+PYOCD_TARGET = R7FA8D1BH
 
 # Port 1 is highspeed
-PORT ?= 1
+PORT ?= 0
 
-flash: flash-jlink
+CFLAGS += \
+    -DBOARD_TUD_RHPORT=${PORT} \
+    -DBOARD_TUH_RHPORT=1
+
+flash: flash-pyocd
