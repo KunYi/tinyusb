@@ -1,3 +1,4 @@
+import click
 import sys
 import subprocess
 from pathlib import Path
@@ -37,9 +38,9 @@ deps_optional = {
                                         'xmc4000'],
     'hw/mcu/microchip': ['https://github.com/hathach/microchip_driver.git',
                          '9e8b37e307d8404033bb881623a113931e1edf27',
-                         'sam3x samd11 samd21 samd51 same5x same7x saml2x samg'],
+                         'sam3x samd11 samd21 samd51 samd5x_e5x same5x same7x saml2x samg'],
     'hw/mcu/mindmotion/mm32sdk': ['https://github.com/hathach/mm32sdk.git',
-                                  '0b79559eb411149d36e073c1635c620e576308d4',
+                                  'b93e856211060ae825216c6a1d6aa347ec758843',
                                   'mm32'],
     'hw/mcu/nordic/nrfx': ['https://github.com/NordicSemiconductor/nrfx.git',
                            '7c47cc0a56ce44658e6da2458e86cd8783ccc4a2',
@@ -166,7 +167,7 @@ deps_optional = {
                                        'stm32wb'],
     'hw/mcu/ti': ['https://github.com/hathach/ti_driver.git',
                   '143ed6cc20a7615d042b03b21e070197d473e6e5',
-                  'msp430 msp432e4 tm4c123'],
+                  'msp430 msp432e4 tm4c'],
     'hw/mcu/wch/ch32v307': ['https://github.com/openwch/ch32v307.git',
                             '17761f5cf9dbbf2dcf665b7c04934188add20082',
                             'ch32v307'],
@@ -179,7 +180,8 @@ deps_optional = {
                     'lpc11 lpc13 lpc15 lpc17 lpc18 lpc40 lpc43'
                     'stm32f0 stm32f1 stm32f2 stm32f3 stm32f4 stm32f7 stm32g0 stm32g4 stm32h5'
                     'stm32h7 stm32l0 stm32l1 stm32l4 stm32l5 stm32u5 stm32wb'
-                    'sam3x samd11 samd21 samd51 same5x same7x saml2x samg'],
+                    'sam3x samd11 samd21 samd51 samd5x_e5x same5x same7x saml2x samg'
+                    'tm4c'],
     'lib/sct_neopixel': ['https://github.com/gsteiert/sct_neopixel.git',
                          'e73e04ca63495672d955f9268e003cffe168fcd8',
                          'lpc55'],
@@ -226,27 +228,46 @@ def get_a_dep(d):
     return 0
 
 
-# Arguments can be
-# - family name
-# - specific deps path
-# - all
-if __name__ == "__main__":
+def find_family(board):
+    bsp_dir = Path(TOP / "hw/bsp")
+    for family_dir in bsp_dir.iterdir():
+        if family_dir.is_dir():
+            board_dir = family_dir / 'boards' / board
+            if board_dir.exists():
+                return family_dir.name
+    return None
+
+
+@click.command()
+@click.argument('family', nargs=-1, required=False)
+@click.option('-b', '--board', multiple=True, default=None, help='Boards to fetch')
+def main(family, board):
+    if len(family) == 0 and len(board) == 0:
+        print("Please specify family or board to fetch")
+        return
+
     status = 0
     deps = list(deps_mandatory.keys())
-    # get all if  'all' is argument
-    if len(sys.argv) == 2 and sys.argv[1] == 'all':
+
+    if 'all' in family:
         deps += deps_optional.keys()
     else:
-        for arg in sys.argv[1:]:
-            if arg in deps_all.keys():
-                # if arg is a dep, add it
-                deps.append(arg)
-            else:
-                # arg is a family name, add all deps of that family
-                for d in deps_optional:
-                    if arg in deps_optional[d][2]:
-                        deps.append(d)
+        family = list(family)
+        if board is not None:
+            for b in board:
+                f = find_family(b)
+                if f is not None:
+                    family.append(f)
+
+        for f in family:
+            for d in deps_optional:
+                if f in deps_optional[d][2]:
+                    deps.append(d)
 
     with Pool() as pool:
         status = sum(pool.map(get_a_dep, deps))
-    sys.exit(status)
+    return status
+
+
+if __name__ == "__main__":
+    sys.exit(main())
